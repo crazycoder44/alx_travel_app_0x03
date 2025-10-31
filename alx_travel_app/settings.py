@@ -258,7 +258,7 @@ REDOC_SETTINGS = {
     'PATH_IN_MIDDLE': True,
 }
 
-# Celery Configuration
+# Celery Config
 CELERY_BROKER_URL = 'amqp://localhost'  # RabbitMQ default
 CELERY_RESULT_BACKEND = 'rpc://'
 CELERY_ACCEPT_CONTENT = ['json']
