@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework import viewsets, status, permissions
 from .models import Listing, Booking, Payment
 from .serializers import ListingSerializer, BookingSerializer, PaymentSerializer
+from .tasks import send_booking_confirmation_email
 
 
 class ListingViewSet(viewsets.ModelViewSet):
@@ -27,6 +28,24 @@ class BookingViewSet(viewsets.ModelViewSet):
     queryset = Booking.objects.all().order_by('-created_at')
     serializer_class = BookingSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        # Save the booking instance
+        booking = serializer.save()
+
+        # Prepare email content
+        user_email = booking.user.email if booking.user else None
+        if user_email:
+            booking_details = (
+                f"Booking ID: {booking.id}\n"
+                f"Destination: {booking.destination}\n"
+                f"Date: {booking.date}\n"
+                f"Status: {booking.status}\n"
+                f"Created at: {booking.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
+            )
+
+            # Trigger Celery background task
+            send_booking_confirmation_email.delay(user_email, booking_details)
 
 CHAPA_BASE_URL = "https://api.chapa.co/v1"
 

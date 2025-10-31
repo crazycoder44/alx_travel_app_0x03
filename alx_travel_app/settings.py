@@ -257,3 +257,20 @@ REDOC_SETTINGS = {
     'EXPAND_RESPONSES': 'all',
     'PATH_IN_MIDDLE': True,
 }
+
+# Celery Configuration
+CELERY_BROKER_URL = 'amqp://localhost'  # RabbitMQ default
+CELERY_RESULT_BACKEND = 'rpc://'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+
+# Email Configuration (for booking notifications)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'crazycoder44@gmail.com'  # replace with your Gmail
+EMAIL_HOST_PASSWORD = 'bla_bla_bla'  # use an App Password, not your real one
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
